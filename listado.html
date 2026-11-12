@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineFlix - Reservaciones guardadas</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+
+<div class="contenedor ancho">
+
+    <header class="encabezado">
+        <h1>CineFlix</h1>
+        <p>Reservaciones almacenadas en SQLite</p>
+
+        <nav>
+            <a href="{{ url_for('reserva') }}">Nueva reservación</a>
+            <a href="{{ url_for('listado') }}">Actualizar listado</a>
+        </nav>
+    </header>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, texto in mensajes %}
+                <div class="alerta {{ categoria }}">{{ texto }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2>Reservaciones registradas</h2>
+
+    {% if reservaciones %}
+    <div class="tabla-contenedor">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Película</th>
+                    <th>Fecha</th>
+                    <th>Horario</th>
+                    <th>Boletos</th>
+                    <th>Sala</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for reserva in reservaciones %}
+                <tr>
+                    <td>{{ reserva.id }}</td>
+                    <td>{{ reserva.nombre }}</td>
+                    <td>{{ reserva.pelicula }}</td>
+                    <td>{{ reserva.fecha }}</td>
+                    <td>{{ reserva.horario }}</td>
+                    <td>{{ reserva.boletos }}</td>
+                    <td>{{ reserva.sala }}</td>
+                    <td>
+                        <form method="POST"
+                              action="{{ url_for('cancelar', reserva_id=reserva.id) }}">
+                            <button class="boton-eliminar" type="submit">
+                                Cancelar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+        <p class="vacio">Todavía no hay reservaciones guardadas.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineFlix - Reservaciones</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+
+<div class="contenedor">
+
+    <header class="encabezado">
+        <h1>CineFlix</h1>
+        <p>Reserva tus boletos favoritos</p>
+
+        <nav>
+            <a href="{{ url_for('reserva') }}">Nueva reservación</a>
+            <a href="{{ url_for('listado') }}">Ver reservaciones</a>
+        </nav>
+    </header>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+            {% for categoria, texto in mensajes %}
+                <div class="alerta {{ categoria }}">{{ texto }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if errores %}
+        <div class="alerta error">
+            <strong>Revisa los siguientes datos:</strong>
+            <ul>
+                {% for error in errores %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <h2>Formulario de reservación</h2>
+
+    <form method="POST" action="{{ url_for('reserva') }}">
+
+        <label for="nombre">Nombre del cliente:</label>
+        <input id="nombre" type="text" name="nombre"
+               value="{{ form_data.get('nombre', '') }}" required>
+
+        <label for="pelicula">Película:</label>
+        <select id="pelicula" name="pelicula" required>
+            <option value="">Selecciona una película</option>
+            <option value="Intensamente 2">Intensamente 2</option>
+            <option value="Coco">Coco</option>
+            <option value="Elementos">Elementos</option>
+            <option value="Robot salvaje">Robot salvaje</option>
+        </select>
+
+        <label for="fecha">Fecha de función:</label>
+        <input id="fecha" type="date" name="fecha" required>
+
+        <label for="horario">Horario:</label>
+        <select id="horario" name="horario" required>
+            <option value="">Selecciona horario</option>
+            <option value="14:00">14:00 horas</option>
+            <option value="17:00">17:00 horas</option>
+            <option value="20:00">20:00 horas</option>
+        </select>
+
+        <label for="boletos">Cantidad de boletos (1 a 10):</label>
+        <input id="boletos" type="number" name="boletos"
+               min="1" max="10" required>
+
+        <label for="sala">Tipo de sala:</label>
+        <select id="sala" name="sala" required>
+            <option value="">Selecciona sala</option>
+            <option value="Tradicional">Tradicional</option>
+            <option value="VIP">VIP</option>
+            <option value="3D">3D</option>
+        </select>
+
+        <button type="submit">Guardar reservación</button>
+
+    </form>
+</div>
+
+</body>
+</html>
